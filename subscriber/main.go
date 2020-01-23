@@ -16,7 +16,7 @@ func main() {
 	var clientID string
 	var topicName string
 
-	clientID = "goClient"
+	clientID = "goClientSub"
 	broker = "tcp://localhost:1883"
 	topicName = "merchantOrder/restaurant"
 
@@ -45,9 +45,10 @@ func connect(clientID string, uri *url.URL) mqtt.Client {
 }
 
 func subscribe(client mqtt.Client, topic string) {
+	fmt.Println("Subscribing to topic " + topic)
 	for {
-		client.Subscribe(topic, 2, func(client mqtt.Client, msg mqtt.Message) {
-			fmt.Printf("* [%s] %s\n", msg.Topic(), string(msg.Payload()))
+		client.Subscribe(topic, 0, func(client mqtt.Client, msg mqtt.Message) {
+			fmt.Printf("* [%s] %s recievied at : %s\n", msg.Topic(), string(msg.Payload()), time.Now().String())
 		})
 	}
 }

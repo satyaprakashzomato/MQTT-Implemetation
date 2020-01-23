@@ -1,0 +1,57 @@
+<html>
+        <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+        <script>
+// const mqtt = require('mqtt')
+// connect options
+const options = {
+      connectTimeout: 4000,
+
+      // Authentication
+      clientId: 'jsClient',
+      username: 'admin',
+      password: 'public',
+
+      keepalive: 60,
+      clean: true,
+}
+
+// WebSocket connect url
+const WebSocket_URL = 'ws://localhost:8083/mqtt'
+
+// TCP/TLS connect url
+const TCP_URL = 'mqtt://localhost:1883'
+const TCP_TLS_URL = 'mqtts://localhost:8883'
+
+const client = mqtt.connect(WebSocket_URL, options)
+
+client.on('connect', () => {
+    console.log('Connect success')
+})
+
+client.on('reconnect', (error) => {
+    console.log('reconnecting:', error)
+})
+
+client.on('error', (error) => {
+    console.log('Connect Error:', error)
+})
+
+client.on('connect', () => {
+    console.log('Connect Success')
+    client.subscribe('merchantOrder/restaurant', { qos: 1 }, (error) => {
+        if (!error) {
+            console.log('Subscribe Success')
+        }
+    })
+})
+
+client.on('message', (topic, message) => {
+  console.log('Received form', topic, ':', message.toString())
+
+  // disconnect
+//   client.end()
+})
+
+
+        </script>
+</html>

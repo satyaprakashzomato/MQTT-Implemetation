@@ -13,11 +13,13 @@ import (
 func main() {
 	var broker string
 	var clientID string
-	var topicName string
+	var topicNameAndroid string
+	var topicNameGolang string
 
-	clientID = "goClient"
+	clientID = "goClientPub"
 	broker = "tcp://localhost:1883"
-	topicName = "merchant/android"
+	topicNameAndroid = "merchant/android"
+	topicNameGolang = "merchantOrder/restaurant"
 
 	uri, err := url.Parse(broker)
 	if err != nil {
@@ -25,7 +27,8 @@ func main() {
 	}
 
 	connection := connect(clientID, uri)
-	publish(connection, topicName)
+	publish(connection, topicNameAndroid)
+	publish(connection, topicNameGolang)
 }
 
 func connect(clientID string, uri *url.URL) mqtt.Client {
@@ -44,18 +47,11 @@ func connect(clientID string, uri *url.URL) mqtt.Client {
 }
 
 func publish(client mqtt.Client, topic string) {
-	// for i := 0; i < 10; i++ {
-	// 	token := client.Publish(topic, 1, false, strconv.Itoa(i))
-	// 	if err := token.Error(); err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	fmt.Println("Published..")
-	// }
-	token := client.Publish(topic, 2, false, "Source : Golang")
+	token := client.Publish(topic, 1, true, "Source : Golang, time : "+time.Now().String())
 	if err := token.Error(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Published..")
+	fmt.Println("Published to topic : " + topic)
 }
 
 /**
